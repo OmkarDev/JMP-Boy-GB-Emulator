@@ -1,0 +1,36 @@
+
+-----------------------------------------------------------------------------
+Title		:	Gameboy demo collection
+Author		:	Martijn Wenting / Revival Studios
+Genre		:	Demo
+Gameboy type(s)	:	Gameboy DMG, Gameboy Pocket, Gameboy Color
+Date		:	12/07/2006
+-----------------------------------------------------------------------------
+
+All the contents of this cart are (c)copyright 1996-2006 Revival Studios.
+The contents of the cart may not be spread, published or distributed in 
+any way without the permission of the authors.
+
+Please run the on a real Gameboy/Gameboy Color if possible!
+If you like to distribution this package, please remain package complete.
+
+Introduction:
+-------------
+I was browsing through some old cds today searching for some graphics and i 
+stumbled upon some old sources of some gameboy things i worked on way back 
+(1996-1999). I wasn't able to get a lot of it compiling, but i was able to 
+assemble a small collection of early gameboy demos:
+
+- TECHFLEX.GB - Techflex effect (DMG, 1996)
+- PARALLAX.GB - parallax scrolling demo (DMG, 1996)
+- PLASMA.GB   - plasma demo (DMG, 1996)
+- DUDEWAVE.GB - Image wave effect (DMG, 1996)
+- VECTDEMO.GB - 3d vector demo (DMG, 1996)
+- MATRIX.GB   - The matrix trailer (GBC, 1999)
+- GLOWDEMO.GB - Glow demo (GBC, 1999)
+
+
+Regards,
+
+	Martyn Wenting / Revival Studios
+
