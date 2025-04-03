@@ -1,8 +1,9 @@
 package cartridge;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import cpu.CPU;
 import utils.Utils;
@@ -16,20 +17,21 @@ public class Cartridge {
 	private int romSize;
 	private int bankCount;
 	private int ramSize;
-	private String path;
+	File file;
+//	private String path;
 
 	private MBC mbc;
 	public String saveFilePath = null;
 
-	public Cartridge(String path, CPU cpu) {
-		init(path, cpu);
+	public Cartridge(File file, CPU cpu) {
+		init(file, cpu);
 	}
 
-	public void init(String path, CPU cpu) {
+	public void init(File file, CPU cpu) {
 		this.cpu = cpu;
-		this.path = path;
+		this.file = file;
 		try {
-			loadROM(path);
+			loadROM(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -230,10 +232,10 @@ public class Cartridge {
 		return true;
 	}
 
-	public void loadROM(String path) throws IOException {
-		URL resource = getClass().getResource(path);
-		saveFilePath = resource.getPath().replaceFirst(".gb", ".sav").replaceAll("%20", " ");
-		InputStream inputStream = getClass().getResourceAsStream(path);
+	public void loadROM(File file) throws IOException {
+//		URL resource = getClass().getResource(path);
+		saveFilePath = file.getAbsolutePath().replaceFirst(".gb", ".sav");
+		InputStream inputStream = new FileInputStream(file);
 		byte[] rom = Utils.readAllBytes(inputStream);
 		this.rom = new int[rom.length];
 
@@ -261,7 +263,7 @@ public class Cartridge {
 //	}
 
 	public String getFilePath() {
-		return path;
+		return file.getAbsolutePath();
 	}
 
 }

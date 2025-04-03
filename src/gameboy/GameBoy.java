@@ -1,12 +1,13 @@
 package gameboy;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import bus.Bus;
@@ -26,7 +27,7 @@ public class GameBoy extends JPanel implements Runnable, KeyListener {
 	public static final int HEIGHT = 144 * PIXEL_SIZE;
 
 	CPU cpu;
-	Cartridge cartridge;
+	public Cartridge cartridge;
 	Timer timer;
 	public static String serialOut = "";
 
@@ -34,14 +35,16 @@ public class GameBoy extends JPanel implements Runnable, KeyListener {
 	public Joypad joypad;
 	public Bus bus;
 	public DMA dma;
-	public static String frameTitle = "";
+	public static String gameTitle = "";
+	private Display display;
 
-	public GameBoy() {
+	public GameBoy(Display display) {
+		this.display = display;
 		bus = new Bus();
 		cpu = new CPU(bus);
 		joypad = new Joypad(cpu);
 		dma = new DMA(bus);
-		cartridge = new Cartridge("/cpu_instrs.gb", cpu);
+//		cartridge = new Cartridge("/cpu_instrs.gb", cpu);
 //		cartridge = new Cartridge("/mem_timing.gb", cpu);
 //		cartridge = new Cartridge("/mem_timing_2.gb", cpu);// TODO REQUIRES LCD & DOES NOT HAVE SERIAL OUTPUT
 //		cartridge = new Cartridge("/instr_timing.gb", cpu);
@@ -81,9 +84,13 @@ public class GameBoy extends JPanel implements Runnable, KeyListener {
 //		cartridge = new Cartridge("/individual/10-bit ops.gb", cpu);
 //		cartridge = new Cartridge("/individual/11-op a,(hl).gb", cpu);
 
+//		chooseRomFile(filePath);
+	}
+
+	public void chooseRomFile(File file) {
+		cartridge = new Cartridge(file, cpu);
 		cpu.setCartridge(cartridge);
 		timer = new Timer(cpu);
-//		cartridge.loadBootRom();
 		ppu = new PPU(cpu);
 		bus.connect(cartridge, timer, cpu.getInterrupt(), ppu, joypad, dma);
 		cpu.reset();
@@ -96,12 +103,12 @@ public class GameBoy extends JPanel implements Runnable, KeyListener {
 
 	int fps = 0;
 	long timeForFrame = 0;
+	public volatile boolean running = false;
 
 	public void run() {
-		while (true) {
-
+		while (running) {
 			if (System.currentTimeMillis() - before >= 1000) {
-				frame.setTitle(frameTitle+"		FPS: "+fps);
+				display.setTitle(gameTitle + "		FPS: " + fps);
 				before = System.currentTimeMillis();
 				fps = 0;
 			}
@@ -128,32 +135,14 @@ public class GameBoy extends JPanel implements Runnable, KeyListener {
 	}
 
 	public void paint(Graphics g) {
-		ppu.render((Graphics2D) g);
+		if (ppu != null) {
+			ppu.render((Graphics2D) g);
+		}
 	}
 
 	@Override
 	public Dimension preferredSize() {
 		return new Dimension(WIDTH, HEIGHT);
-	}
-
-	public static JFrame frame = new JFrame();
-
-	public static void main(String[] args) {
-		GameBoy screen = new GameBoy();
-		frame.setTitle("Game Boy Emulator");
-		frame.setResizable(false);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setFocusable(true);
-		frame.addKeyListener(screen);
-		frame.add(screen);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		String cartPath = screen.cartridge.getFilePath();
-		frameTitle = cartPath.substring(cartPath.lastIndexOf("/") + 1);
-		frame.setTitle(frameTitle);
-		Thread thread = new Thread(screen);
-		thread.start();
 	}
 
 	@Override
